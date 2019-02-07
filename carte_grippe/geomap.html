@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://d3js.org/d3-color.v1.min.js"></script>
+  <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+  <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="style.css"></style>
+</head>
+
+<body>
+  <script>
+    // Helper functions
+    // Helper function adding the values array to each json region element in the
+    // values_array property. Requires to be called within a CSV and a JSON loader
+    function link_csv_data_to_json(data, json) {
+
+      // Looping over each element of the json (here the regions)
+      for(var elem in json.features){
+
+        // Looping over each row in the CSV (with a row being a region data)
+        data.forEach(function(csv_row) {
+
+          // Converting the row to a javascript array
+          csv_array = Object.values(csv_row)
+
+          // When we have the two regions name matching, create the new property
+          // with the sliced array (without the region name and the 2014 sum)
+          if (csv_array[0] == json.features[elem].properties.nom) {
+            json.features[elem].properties.values_array = csv_array.slice(1, -1)
+          }
+
+        })
+      }
+    }
+
+    // Helper function taking a json element and returning a value, according to the
+    // current visualisation mode
+    function get_values(d, selected_value) {
+      if (d.properties.values_array != undefined) {
+        if (vis_mode == "somme2014") {
+
+          value = d3.sum(d.properties.values_array.slice(0, -1))
+          return value
+
+        } else if (vis_mode == "monthly_sum") {
+          // In this case, selected value ought to be a month number (1..12)
+          value = 0
+          for (var i=0; i < weeks_array.length; i++) {
+            month_of_entry = +monthFormatter(dateParser(weeks_array[i]))
+
+            if (month_of_entry == selected_value) {
+              value += +d.properties.values_array[i]
+            }
+         }
+         return value
+        } else if (vis_mode == "weekly") {
+          // In this case, the selected value ought to be a week number (0..51)
+          return +d.properties.values_array[selected_value]         
+        }
+      }
+    }
+
+    // Helper function to get the color to fill a given region
+    function get_color(d, selected_month) {
+      // Some regions have undefined value, the following
+      // test ensures that they are properly displayed as light grey
+
+      if (d.properties.values_array == undefined) {
+        return "#bbbbbb"
+      } else {
+        return color(get_values(d, selected_month))
+      }
+    }
+
+    // Helper function to set the color scale domain to the appropriated range according
+    // to the visualisation mode. If it is a monthly sum or a weekly visualization, the 
+    // color scale domain need to be recomputed for each change of week/month
+    function set_color_scale_domain(json, vis_mode, c_mapping, selected_value, weeks_array,dParser, mFormatter) {
+      max_value = 0
+      
+      if (vis_mode == "somme2014") {
+        // If yearly visualisation, computing the max of the sum of the values array
+        json.features.forEach(function(d) {
+          region_sum = 0
+          // The following test escapes errors in case of missing values
+          if (d.properties.values_array != undefined) { 
+            region_sum = d3.sum(d.properties.values_array.slice(0, -1))
+            if (region_sum > max_value)
+              max_value = region_sum
+          }
+        })
+
+      } else if (vis_mode == "monthly_sum") {
+        // If monthly visualisation, computing the max of the sum of the values array
+        // whose date label matches the current month
+        json.features.forEach(function(d) {
+          region_sum = 0
+          // The following test escapes errors in case of missing values
+          if (d.properties.values_array != undefined) {
+            for (var i=0; i < weeks_array.length; i++) {
+              month_of_entry = +mFormatter(dParser(weeks_array[i]))
+              if (month_of_entry == selected_value) {
+                region_sum += +d.properties.values_array[i]
+              }
+            }
+            if (region_sum > max_value) {
+              max_value = region_sum
+            }
+          }
+        })
+      } else if (vis_mode == "weekly") {
+        // If monthly visualisation, computing the max of the sum of the values array
+        json.features.forEach(function(d) {
+          // The following test escapes errors in case of missing values
+          if (d.properties.values_array != undefined) {
+            if (+d.properties.values_array[selected_value] > max_value) {
+              max_value = +d.properties.values_array[selected_value]
+              console.log(max_value)
+            }
+          }
+        })
+      }
+
+      c_mapping.domain([0, max_value])
+    }
+    
+    // Helper function that redraws the color scale, as a juxtaposition of several
+    // discrete elements with an inner padding and the value associated on both bounds 
+    // of the legend. Set the inner padding to 0 and pick a reasonably big number of 
+    //elemnts to have a continuous gradient legend
+    function draw_color_scale(canvas_elem, c_scale, color, x_pos, y_pos, h, w, nb_elements) {
+      bounds = c_scale.domain()
+      padding = 0
+      rect_width = (w - (nb_elements-1) * padding) / nb_elements
+
+      canvas_elem.selectAll(".legend_txt").remove()
+
+      compteur = 0
+      for (compteur; compteur < nb_elements; compteur++) {
+        legend_element = canvas_elem.append("g")
+          .attr("id", "palette")
+          .attr("transform", "translate(" +  x_pos + compteur * (rect_width + padding) + ", " + y_pos + ")")
+          
+        legend_element.append("rect")
+          .attr("width", rect_width)
+          .attr("height", h)
+          .attr("fill", color(bounds[0] + compteur * (bounds[1]-bounds[0]) / (nb_elements-1)))
+
+        if (compteur == 0) {
+          legend_element.append("text")
+            .attr("class", "legend_txt")
+            .attr("x", 0)
+            .attr("y", h + 10)
+            .attr("dy", "0.35em")
+            .text(bounds[0])
+        } else if (compteur == nb_elements-1) {
+          legend_element.append("text")
+            .attr("class", "legend_txt")
+            .attr("x", -20)
+            .attr("y", h + 10)
+            .attr("dy", "0.35em")
+            .text(bounds[1])
+        }
+
+      }
+      
+    }
+
+    // Helper function that updates the week value and calls all the drawing methods
+    function update_viz(new_slider_value, json) {
+      week=new_slider_value - 1
+      d3.select("#week_span")
+        .html("Week " + new_slider_value + " - " + weeks_array[week])
+
+      set_color_scale_domain(json, vis_mode, color_mapping, week, weeks_array, dateParser, monthFormatter)
+      draw_map(week, json)
+      draw_color_scale(svg, color_mapping, color, 0, 0, 20, 300, 100)
+    }
+
+    // Drawing and filling method for all the geographic elements
+    function draw_map(current_value, json) {
+      carte = svg.selectAll("path")
+        .data(json.features)
+
+      carte.enter()
+        .append("path")
+        .attr("d", path)
+        .attr("fill", (d => get_color(d, current_value)))
+        .on('mousemove', function(d) {
+          var mouse = d3.mouse(svg.node()).map(function(d) {
+              return parseInt(d);
+          })
+          tooltip.classed('hidden', false)
+              .attr('style', 'left:' + (canvas_x_begin + mouse[0] + 15) +
+                      'px; top:' + (canvas_y_begin + mouse[1] - 35) + 'px')
+              .html(d.properties.nom + "<br />" + get_values(d, current_value) + " cas");
+          })
+        .on('mouseout', function() {
+            tooltip.classed('hidden', true);
+        });
+
+      carte
+        .attr("class", "update")
+        .attr("fill", (function(d) {console.log(current_value, week); return get_color(d, current_value)}))
+        .on('mousemove', function(d) {
+          var mouse = d3.mouse(svg.node()).map(function(d) {
+              return parseInt(d);
+          })
+          tooltip.classed('hidden', false)
+              .attr('style', 'left:' + (canvas_x_begin + mouse[0] + 15) +
+                      'px; top:' + (canvas_y_begin + mouse[1] - 35) + 'px')
+              .html(d.properties.nom + "<br />" + get_values(d, current_value) + " cas");
+          })
+    }
+
+    // The three different modes of visualizations
+    //var vis_mode = "somme2014", month=undefined;
+    //var vis_mode = "monthly_sum", month=5;
+    var vis_mode = "weekly";
+
+    // Feel free to change or delete any of the code you see in this editor!
+		var svg_width = 700, svg_height = 580
+        client_width = document.documentElement.clientWidth, client_height = document.documentElement.clientHeight
+        canvas_x_begin = (client_width - svg_width) / 2, canvas_y_begin =  (client_height - svg_height) / 2;
+
+    // Creating the slider object
+    var slider_div = d3.select( "body" )
+      .append("div")
+      .attr("id", "slider_div")
+
+    // Creating the canvas
+		var global_cont =d3.select( "body" )
+      .append("div")
+      .attr("id", "global_container")
+      .attr("width", svg_width)
+
+    slider_div.append("span")
+      .attr("id", "week_span")
+      .html("Week #")
+
+    slider_div.append("br")
+
+    slider_div.append("input")
+      .attr("id", "slider")
+      .attr("type", "range")
+      .attr("value", "1").attr("min", "1").attr("max", "52").attr("step", "1")
+      .attr("width", "50")
+
+    slider_div.attr("transform", "translate(" + (client_width - 50) / 2 + ", " + client_height / 2 + ")");
+
+  	
+    var svg = global_cont.append( "svg" )
+		  .attr( "width", svg_width )
+		  .attr( "height", svg_height )
+      .attr("transform", "translate(" + canvas_x_begin + ", " + canvas_y_begin +")");
+
+    // Creating the color scale. The admissible values range will be set up after
+    var color_mapping = d3.scaleLinear()
+      .range([0, 1])
+    
+    // For a given value, return the associated RGB tuple in th Yellow-Orange-Red scale
+    function color(value) { return d3.interpolateYlOrRd(color_mapping(value)); }
+ 
+    var projection = d3.geoConicConformal()
+    			.translate([svg_width/2, svg_height/2])
+          .center([2.454071, 46.279229]) // Centering on France
+          .scale(2800);
+
+    var path = d3.geoPath() // d3.geo.path avec d3 version 3
+                 .projection(projection);
+    
+    // Creating objects to manipulate date
+    var dateParser = d3.timeParse("%d/%m/%y")
+    var monthFormatter = d3.timeFormat("%m");
+
+    // Creating the tooltip object
+    var tooltip = global_cont.append('div')
+      .attr('class', 'hidden tooltip');
+
+    // Loading the grippe data reader function
+    d3.csv("GrippeFrance2014.csv", function(data) {
+
+      weeks_array = Object.keys(data[0]).slice(1, -1)
+      
+      // Loading the regions geodata reader function
+      d3.json("regions.json", function(json) {
+        
+        link_csv_data_to_json(data, json)
+
+        d3.select("#slider")
+          .on("input", function() {
+            update_viz(+this.value, json)
+          })
+
+        week = 12
+
+        set_color_scale_domain(json, vis_mode, color_mapping, week, weeks_array, dateParser, monthFormatter)
+        draw_map(week, json)
+        draw_color_scale(svg, color_mapping, color, 0, 0, 20, 300, 100)
+        
+      })
+      // Closing the regions geodata reader function
+      
+    })
+    // Closing the grippe data reader function
+
+  </script>
+
+</body>
+
