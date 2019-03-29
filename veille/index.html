@@ -93,7 +93,7 @@
 				    <img src="static/pixel_classification_illustration.png"><p class="caption">Segmentation pixellique</p>
 				</div>
 		    	<div class="img-container">
-				    <img src="static/object_detection_illustration.png"">
+				    <img src="static/object_detection_illustration.png">
 				    <p class="caption">Aperçu du résultat d'une détection d'objets</p>
 				</div>
 			</div>
@@ -125,7 +125,7 @@
 
 		    <div class="img_right">
 		    	<img src="static/gaussian_kernel.png">
-		    	<p class="caption">Illustration d'une méthode des noyaux appliquée à une distribution à deux classes avec des noyaux gaussiens</p>
+		    	<p class="caption">Illustration d'une méthode des noyaux</p>
 		    </div>
 		    <p>Il est possible d'illustrer simplement cette <q>projection</q> en haute dimension en considérant des données bi-dimensionnelles. Considérons une douzaine de données dans le plan <q lang="latex">(x, y)</q>, avec deux classes, <q>Cercle</q> et <q>Triangle</q> comme représentées sur l'illustration ci-dessous. Il est difficile avec uniquement ces données de trouver une frontière pertinente. On va donc projeter dans un espace 3D ces données, afin de tracer un hyperplan (ici un plan classique) à z constant. La représentation choisie ci-dessous se cantonne à une projection 2D, mais il est possible d'avoir accès à la hauteur des points en lisant les courbes comme des lignes iso. Tous les points d'une même ligne sont à la même hauteur, et toute ligne au sein d'une ligne fermée présente un écart à l'altitude 0 plus important. Cette distinction sur l'altitude nous donnera la classe d'un nouveau point. Dans le cas présenté ici, on a recours à des noyaux gaussiens. Pour chaque point de l'espace on va calculer une altitude qui va dépendre de sa distance aux autres points d'entraînement avec une décroissance qui suit une fonction gaussienne, en sommant les contributions de chaque données d'entraînement. Ainsi une forte concentration de points va amener un pic d'altitude et la présence de quelques points ne feront que proposer une colline. En affectant un signe d'élévation au regard de la classe d'entraînement, la méthode à base de noyaux va générer des reliefs ou des dépressions, qui renseigneront sur la classe la plus probable pour un nouveau point.</p>
 
