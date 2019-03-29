@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>AI in Health</title>
+	<meta charset="UTF-8">
+  	<meta name="author" content="Charles Dupuy">
+  	<link rel="stylesheet" type="text/css" href="style.css">
+  </head>
+
+  <body>
+
+	<!-- Titre  -->
+  	<div id="title">
+	  	<h1>IA & Medecine</h1>
+	  	<h2>Veille technologique sur les solutions d'Intelligence Artificielle<br /> utilisees en Medecine</h2>
+  	</div>
+
+  	<div id="inside-body">
+	    
+	    <!-- Navigation  -->
+	    <ul class="nav">
+	    	<div class="dropdown">
+		    	<li>Introduction</li>
+		    </div>
+	    	<div class="dropdown">
+	    		<li><a href="#cnn">CNN</a></li>
+	    		<div class="dropdown-content">
+					<a href="#cnn_pres">Présentation</a>
+					<a href="#cnn_examples">Exemples d'utilisations</a>
+	    		</div>
+		    </div>
+	    	<div class="dropdown">
+	    		<li><a href="#svm">SVM</a></li>
+	    		<div class="dropdown-content">
+					<a href="#svm_methods">Principes d'IA</a>
+					<a href="#svm_usage">Utilisation en Médecine</a>
+	    		</div>
+		    </div>
+	    	<div class="dropdown">
+	    		<li><a href="#nlp">NLP</a></li>
+	    		<div class="dropdown-content">
+					<a href="#nlp_prescriptions">Analyse des prescriptions</a>
+					<a href="#nlp_paper_analysis">Analyse de la littérature scientifique</a>
+
+	    		</div>
+		    </div>
+	    	<div class="dropdown">
+	    		<li><a href="#privacy">Confidentialité</a></li>
+	    		<div class="dropdown-content">
+					<a href="#privacy_pseudo">Pseudonymisation</a>
+					<a href="#privacy_fed_learning">Federated Learning</a>
+	    		</div>
+		    </div>
+	    </ul>
+
+	    <div id="content">
+
+		    <!-- Introduction  -->
+		    <h2 id="intro">Introduction</h2>
+
+		    <p>Ensemble de technologies très à la mode ces dernières années, l'Intelligence Arificielle est promise à une amener une révolution conséquente dans de nobmreux domaines, et notamment dans le domaine de la Médecine. En effet, de par son caractère critique (gestion de la santé des gens) et la complexité des interactions en organisme, la recherche médicale est un secteur qui nécessite des investissement extrêmement massifs sur longue durée, sans garantie d'obtenir des résultats concrets. Regardons donc comment l'Intelligence Artificielle est actuellement utilisée (en fin mars 2019) pour améliorer les résultats et diminuer les investissements nécessaires.</p>
+
+		    <!-- Réseaux de neurones convolutifs  -->
+		    <h2 id="cnn">Réseaux de Neurones Convolutifs</h2>
+
+		    <h3 id="cnn_pres">Présentation</h3>
+
+		    <h4>Différences et apports par rapport aux réseaux de neurones</h4>
+
+		    <div class="img_left">
+		    	<img src="static/training_illustration.png"/>
+		    	<p class="caption">Principe de l'entraînement d'un algorithme de Machine Learning</p>
+		    </div>
+		    <p>Les réseaux de neurones convolutifs sont l'une des applications IA les plus à la mode, notamment grâce à une capacité de traitement extremêment rapide et une fiabilité se rapprochant de l'humain. Dérivés des réseaux de neurones de type perceptron multi-couches, les CNN (<q lang="en">Convolutional Neural Network</q> - sigle anglophone des RNC) en conservent la phase d'apprentissage. On fournit au modèle un très grand nombre d'images annotées puis il effectue des prédictions sur chacune de ces images. Puisque les images sont annotées - c'est-à-dire qu'on fournit également au modèle la valeur attendue pour toutes ces images - le réseaux de neurones va être capable de mesurer son écart avec ce qui est attendu et va modifier ses paramètres internes pour coller le plus possible aux résutlats attendus.</p>
+
+			<p>Il se différencie des autres réseaux par sa structure. Là où les perceptrons multicouche liaient chacun de leur paramètre avec toutes les entrées et toutes les sorties, les CNN sont composés de filtres qui vont tous regarder des petites portions de l'image, en gardant l'aspect bidimensionel. Cela permet de garder l'information de la structure originelle de l'image. De plus, un filtre va regarder toute l'image et cela va générer une carte d'activation (feature map) qui représentera la ressemblance d'une partie de l'image avec un certain motif. En empilant un grand nombre de ces filtres, on obtient un grand nombre de cartes d'activations, qui vont ensuite elle-même être retraité par d'autres filtres. Avec cette structure pyramidale, le réseau ne va pas non seulement avoir une meilleure gestion de l'information bidimensionnelle mais va en plus pouvoir dire à quel endroit se situent les données les plus discriminantes.</p>
+			<div class="img_broad">
+				<img src="static/cnn_illustration.jpg" style="margin: auto;">
+		    	<p class="caption">Illustration de la structure d'un réseau de neurones convolutif</p>
+		    </div>
+
+		    <h4>Types de reconnaissance d'images</h4>
+		    <p>Il existe deux grandes familles de reconnaissance d'image. La première est la classification. Ce type de modèle peut retourner au choix soit la classe de l'image dans son ensemble ou donner une classe d'appartenance pour chaque pixel de l'image. Par exemple, un modèle pourrait donner le type d'animal qui est représenté sur la photo alors que le second pourrait donner sur une image satellite, de quel type de revêtement ou d'occupation des sols tel pixel fait partie. Le second type de modèle va quand à lui pointer sur l'image où se situe un type d'élément. Par exemple si on prend en photo le contenu d'un frigo, il va tracer des rectangles autour des différents aliments en spécifiant de quel type d'aliment il s'agit. Si on prend une image d'un croisement routier comme dans la gallerie ci-dessous, on va avoir un rectangle tracé autour de tous les éléments que le modèle a pu distinguer.</p>
+
+		    <div class="clearfix">
+		    	<div class="img-container">
+				    <img src="static/classification_illustration.png">
+				    <p class="caption">Aperçu d'une base de données d'entraînement pour de la classification</p>
+				</div>
+		    	<div class="img-container">
+				    <img src="static/pixel_classification_illustration.png"><p class="caption">Segmentation pixellique</p>
+				</div>
+		    	<div class="img-container">
+				    <img src="static/object_detection_illustration.png"">
+				    <p class="caption">Aperçu du résultat d'une détection d'objets</p>
+				</div>
+			</div>
+
+		    <h3 id="cnn_examples">Exemples d'utilisations</h3>
+
+		    <h4>Détections de cellules cancéreuses</h4>
+		    <p>Ces modèles fonctionnent usuellement en trois étapes. La première est la segmentation pixellique de l'image. Le but de cette phase est de prédire le type de tissu d'un élément de l'image. La deuxième étape est la détection de nodules (anomalie dans les tissus). En fonction de l'organisation des tissus obtenue avec la classification pixellique, le modèle propose des endroits présentant une anomalie. Enfin, la dernière phase est la classification d'un tel nodule. Les anomalies proposées par le modèle se voient attribuées une des deux classes bénin ou malin. Si la classe de la tumeur est maligne, alors l'équipe soignante est face à une potentielle tumeur cancéreuse.</p>
+		    <p>L'une des principales applications de réseaux de neurones à l'imagerie médicale est la détection de tumeurs malignes à partir d'imagerie médicale. Si certaines applications peuvent se satisfaire d'images classiques en 2D, comme par exemple pour de la détection de grains de beautés malins. Une équipe de chercheurs allemands, américains et français ont réussi, à l'aide de CNN 2D à obtenir de meilleurs résultats qu'une soixantaine de prédictions.</p>
+		    <p>Cependant pour l'analyse de tumeurs des poumons, une image radio classique en 2D issue d'une projection sur un plan 2D (celui de la plaque de détection des rayons X), ne présente pas autant d'information qu'on le souhaite. Les modèles ont donc recours aux données d'imagerie 3D générées par scanneur à rayons X (Tomodensitométrie ou <q lang="en">CT-scan</q> chez les anglosaxons) et utilisent des réseaux convolutionels 3D capables de saisir cette organisation spatiale.</p>
+		    <p>L'une des pistes d'améliorations pour ces applications sont bien évidemment axées autour de l'obtention de meilleurs résultats, à la fois en terme de meilleure précision mais également en terme de minimisation du taux de fausses alertes. Cependant, qui dit <q lang="en">Deep Learning</q>, dit également données d'apprentissage. Si on compare à d'autres domaines, peu de données sont disponibles. Des recherches sont donc menées pour obtenir des résultats satisfaisants avec un nombre plus réduit de données d'entrées, ou même pour obtenir des modèles capables de s'adapter à d'autres types de cancers. Par exemple, une équipe de l'Université de Stanford a réussi à obtenir des résultats plus que corrects avec un processus d'annotations plus léger. Pour cela, ils ont séparé le processus d'entraînement en trois phases (celles présentées plus haut) aux fonctions bien distinctes plutôt que de faire plusieurs phases d'entraînement des trois modules du réseau.</p>
+
+		    <h4>Prédictions de réponses à un traitement par immunothérapie</h4>
+		    <p>La reconnaissance d'images est également utilisée pour prédire l'efficacité d'un traitement par immunothérapie. En effet, ce nouveau mode de traitement présente de fortes disparités selon le patient. Il repose sur une stimulation des défenses immunitaires du patient à l'échelle de l'organisme entier par injection de protéines produites par le système immunitaire. Cependant, dans un nombre significatif de cas (peu de chiffres concrets circulent mais il est fait mention de proportions allant de 20% à 50%, avec également une très grande variabilité entre différents types de cancers), les cellules tumorales se défendent et viennent bloquer les cellules inoculées.</p>
+
+		    <p>L'hôpital Gustave Roussy est parvenu à une méthode se basant sur des CNN pour prédire, à partir d'images de scanner, une prédiction de l'efficacité de l'immunothérapie. Cette approche permet de minimiser les coûts et de gagner en rapidité. En effet, pour prédire l'efficacité d'une tel traitement, les équipes soignantes avaient auparavant recours à une biopsie, c'est-à-dire un prélèvement de tissus du patient et devait conduire une analyse médicale sur ceux-ci.</p>
+
+		    <!-- SVM  -->
+		    <h2 id="svm">Classifications de données statistiques</h2>
+
+		    <p>Si le traitement d'images est un secteur prometteur et très porteur en médecine, toutes les problématiques de traitement de données ne tombent pas forcément sous la coupe de la vision par ordinateur. De nombreuses données sont en fait stockées sous la forme de données statistiques, organisées en base de données avec des entrées et un certain nombre d'attributs.</p>
+
+		    <h3 id="svm_methods">Principes d'IA</h3>
+
+		    <p>Si les réseaux de neurones peuvent également être appliqués à ces problèmes de classification, le <q lang="en">Machine Learning</q> a tout de même apporté de nouvelles méthodes de classification plus simples (en terme de complexité du modèle) et proposant des performances tout à fait satisfaisantes. On peut noter par exemple les méthodes à base de noyaux, et tout particulièrement l'une de ces méthodes la Machine à Vecteur Support (<q lang="en">SVM - Support Machine Vector</q>).</p>
+
+		    <h4>Méthodes à base de noyaux</h4>
+		    <p>Les méthodes à base de noyaux sont une famille de méthodes d'apprentissage supervisé, et qui par conséquent possède pour chaque donnée d'entraînement la classe réelle d'appartenance. Elles proposent de projeter les données dans un espace vectoriel de dimension supérieure en créant de nouveaux attributs, calculés à partir d'attributs existants. Ensuite, une fois ces données <q>augmentées</q>, la méthode cherche une frontière linéaire sous la forme d'un hyperplan qui va séparer les classes des données.</p>
+
+		    <div class="img_right">
+		    	<img src="static/gaussian_kernel.png">
+		    	<p class="caption">Illustration d'une méthode des noyaux appliquée à une distribution à deux classes avec des noyaux gaussiens</p>
+		    </div>
+		    <p>Il est possible d'illustrer simplement cette <q>projection</q> en haute dimension en considérant des données bi-dimensionnelles. Considérons une douzaine de données dans le plan <q lang="latex">(x, y)</q>, avec deux classes, <q>Cercle</q> et <q>Triangle</q> comme représentées sur l'illustration ci-dessous. Il est difficile avec uniquement ces données de trouver une frontière pertinente. On va donc projeter dans un espace 3D ces données, afin de tracer un hyperplan (ici un plan classique) à z constant. La représentation choisie ci-dessous se cantonne à une projection 2D, mais il est possible d'avoir accès à la hauteur des points en lisant les courbes comme des lignes iso. Tous les points d'une même ligne sont à la même hauteur, et toute ligne au sein d'une ligne fermée présente un écart à l'altitude 0 plus important. Cette distinction sur l'altitude nous donnera la classe d'un nouveau point. Dans le cas présenté ici, on a recours à des noyaux gaussiens. Pour chaque point de l'espace on va calculer une altitude qui va dépendre de sa distance aux autres points d'entraînement avec une décroissance qui suit une fonction gaussienne, en sommant les contributions de chaque données d'entraînement. Ainsi une forte concentration de points va amener un pic d'altitude et la présence de quelques points ne feront que proposer une colline. En affectant un signe d'élévation au regard de la classe d'entraînement, la méthode à base de noyaux va générer des reliefs ou des dépressions, qui renseigneront sur la classe la plus probable pour un nouveau point.</p>
+
+
+		    <div class="img_left">
+		    	<img src="static/svm.png">
+		    	<p class="caption">Illustration de la méthode de la machine à vecteurs support</p>
+		    </div>
+		    <h4>Machines à vecteurs support</h4>
+		    <p>Cependant nous sommes en présence d'un nombre fini de données. En considérant un cas d'usage plus complexe où le plan initial des données ne permet pas de bien séparer les classes et où il faut trouver un hyperplan séparateur éventuellement incliné, quel est le meilleur hyperplan à choisir ? Tous les hyperplans séparateurs sont en effet des candidats satisfaisants pour nos données mais ils vont pas la suite se différencier en terme de capacité à généraliser à de nouvelles données. Un mathématicien du nom de Vapnik a montré que l'hyperplan qui généralisait le mieux était celui qui maximisait la marge avec les points les plus extrêmes des deux distributions. Le modèle qui utilise un tel hyperplan est appelé une Machine à Vecteur Support. Son nom vient du fait qu'elle s'appuie (support) sur les données (vecteurs) les plus extrêmes pour choisir la frontière.</p>
+
+		    <h3 id="svm_usage">Utilisation en Médecine</h3>
+		    <p>La médecine utilise ce genre de modèle pour des problèmes de classification. Moins complexes que des réseaux de neurones, ils permettent cependant d'avoir de très bons résultats, tout en simplifiant le travail d'analyses des résultats d'expériences.</p>
+		    <p>Par exemple, une SVM a été utilisé dans une étude menée pour détecter l'état de fatigue mentale d'un patient à partir des mouvements de ses yeux. L'étude a été menée sur un nombre restreint de participants mais a recueilli un volume considérable d'informations. En effet, plus de 40 attributs différents ont été mesurés (allant de la taille de la pupille, à la fréquence de clignement des yeux en passant par des séries temporelles portant sur la zone d'attention) avec pour les séries temporelles un échantillonnage à 60 Hz. Pour faciliter l'analyse statistique de ces données, une méthode à base de SVM a été utilisée, avec une phase de choix des attributs les plus indépendants de l'âge afin de produire un modèle prédictif performant. Grâce à cette méthodologie, les chercheurs ont pu proposer un modèle qui obtient des résultats très satisfaisants, tout en minimisant la phase de receuil d'informations. Cette phase est passée de 10 minutes de tests avec des tâches précises à effectuer à uniquement l'étude de visionnage d'une vidéo durant une trentaine de secondes.</p>
+
+		    <!-- NLP  -->
+		    <h2 id="nlp">Traitement du langage</h2>
+		    <p>De par sa structure grammaticale et l'importance de l'ordonnancement, la compréhension du langage est une tâche complexe qui fut longtemps impossible pour un oridnateur. Cependant, il existe désormais quelques outils qui peuvent identifier les thèmes d'un texte ou même en saisir le sens. La médecine est un domaine particulièrement demandeur de ce type d'outils afin de traiter des corpus de textes, que ce soit de recherche scientifique, de notice prescriptive ou de prescriptions de médecins.</p>
+
+		    <h3 id="nlp_prescriptions">Analyse des prescriptions</h3>
+			<p>Par exemple la start-up Posos propose une solution à destination des laboratoires pharmaceutiques ou des professionnels de santé pour analyser les prescriptions qui sont faites de leur médicament. Prenons par exemple l'épidémie d'overdose aux opioïdes qui sévit depuis une dizaine d'années sur le sol américain. L'une des grandes faiblesses du système de santé a été de ne pas pouvoir quantifier les prescriptions d'OxyContin (ou dérivés) pour des maux relativement légers, prescriptions qui ont par la suite servi d'initiation à l'accoutumance à ces produits hautement addictifs.</p>
+			<p>C'est dans ce cadre que Posos développe une plateforme d'analyse des prescriptions sur tous les médicaments afin d'en faire ressortir les tendances d'usages. De plus, en permettant d'analyser les prescriptions de collègues, un médecin pourra consulter les combinaisons de soins usuellement prescrites ainsi que leur résultats. Si le praticien trouve qu'une même prescription de traitements à entraîné des complications dans 9 cas sur 10, il pourra choisir de privilégier un autre traitement. Le CHU est par ailleurs l'un des tous premiers utilisateurs de cette plateforme, qui est encore à l'état de test (Posos est encore en <q lang="en">early phase</q>, mais est considérée comme l'une des start-up en IA les plus prometteuses selon Forbes). À terme, la plateforme sera également proposée aux utilisateurs de médicaments qui pourront avoir accès à des informations poussées sur leurs soins.</p>
+		    
+		    <h3 id="nlp_paper_analysis">Analyse de la littérature scientifique</h3>
+		    <p>On ne pourrait pas parler de traitement du langage sans évoquer à un moment ou un autre la platforme Watson d'IBM. S'il s'agit de l'une des plateformes les plus efficaces et les plus connues en terme de traitement du langage, son cousin <q lang="en">IBM Watson for Drug Discovery</q> est largement moins connu du grand public. Développé par la section <q lang="en">Watson Health</q> d'IBM, <q lang="en">IBM Watson for Drug Discovery</q> est une plateforme de <q lang="en">cognitive computing</q>. Il s'agit en fait d'une plateforme rassemblant plusieurs services d'analyse exploratoires de données, de traitement de données statistiques, de recueil de données avec des synergies entre les différents modules pour produire du contenu pertinent.</p>
+		    <p>Le module NLP de <q lang="en">Watson for Drug Discovery</q> cherche à analyser toute la littérature scientifique existante sur les études biologiques. À l'aide de sa compréhension des choses, il peut ensuite réaliser un graphe de correspondances mettant en relation les effets de certains acides aminés ou protéines sur des bactéries, des virus ou encore certaines cellules du corps humain. Il produit également un rendu plus graphique de ces interactions, ce qui facilite le travail d'analyse des interactions du pharmacien car il n'a pas à aller chercher des informations au sein d'un texte mais via une interface graphique.</p>
+
+		    <!-- Federated Learning  -->
+		    <h2 id="privacy">Federated Learning</h2>
+		    <p>Nous l'avons vu, les acteurs de la santé ont de plus en plus recours à des méthodes d'apprentissage supervisé. Pour obtenir des résultats satisfaisants, ils doivent donc entraîner les modèles sur des données réelles. Ces données sont cependant liées à des personnes - potentiellement souffrantes, et qu'est-ce qui nous assure que d'une part la personne qui collecte et fournit les données à l'algorithme va respecter la confidentialité de ces données. Si celle-ci est respectée, comment garantir la sécurité au niveau de tous les intermédiaires par qui va transiter l'information ? Cette question est soulevée bien sûr dès qu'il est question de données, mais celles-ci sont particulièrement sensibles.</p>
+
+		    <h3 id="privacy_pseudo">Pseudonymisation</h3>
+		    <p>Il est souvent fait état de "pseudonymisation", une technique qui consiste à affecter à chaque personne un pseudo indéchiffrable, par exemple sous la forme d'une chaîne de caractères en base64 aléatoire. Cette technique est toutefois inefficace devant l'unicité des soins. Le parcours de soins d'une personne est tellement unique qu'il est tout à fait possible de remonter facilement à la véritable personne. De nouvelles propositions émergent pour construire un réseau plus robuste en ce qui concerne la confidentialité des données : le <q lang="en">Federated Learning</q>.</p>
+
+		    <h3 id="privacy_fed_learning">Federated Learning</h3>
+		    <p>Cette méthode propose un système décentralise d'entraînement. Imaginons une société privée qui propose un savoir-faire sur la mise en place d'une solution de suivi client basée sur l'Intelligence Artificielle à un consortium d'hôpital - en passant par un marché public ou par un réseau de cliniques privées peu importe. Une fois définies les grandes lignes de l'outil, le modèle qui va être utilisé et les autres modalités, il faut passer à l'entraînement. Pour cela, le modèle va devoir aspirer les données des clients des établissements. Dans un modèle classique, le groupe d'établissement fournit une base de données. Dans le <q lang="en">Federated Learning</q>, c'est une mouture du modèle non entraînée qui va être envoyée à chaque hôpital. Chaque établissement procède à l'entraînement (grâce à un employé compétent) et une fois celui-ci terminé, le modèle est renvoyé à la société privée, qui va se charger d'aggréger les différents modèles en essayant de conserver les performances. Cette phase d'aggréagation est le point limitant en ce moment, et des équipes de chercheurs essayent de trouver des méthodes pour limiter l'impact d'un entraînement distribué sur les performances du modèle. Dans un processus pareil, les données ne quittent jamais l'hôpital et ne sont donc jamais transmises à des tiers.</p>
+
+		</div>
+
+	</div>
+
+  </body>
+
+</html>

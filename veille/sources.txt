@@ -1,0 +1,18 @@
+Illustration entraînement
+http://technofist.com/IEEE-machine.html
+
+
+CNN Illustration
+https://www.mathworks.com/discovery/convolutional-neural-network.html
+
+Pixel classification Illustration
+http://www.mdpi.com/2072-4292/4/9/2530
+
+Image classification
+https://medium.com/@tifa2up/image-classification-using-deep-neural-networks-a-beginner-friendly-approach-using-tensorflow-94b0a090ccd4
+
+Object detection
+https://medium.com/@jonathan_hui/real-time-object-detection-with-yolo-yolov2-28b1b93e2088
+
+Gaussian Kernels
+http://www.win-vector.com/blog/2011/10/kernel-methods-and-support-vector-machines-de-mystified/
